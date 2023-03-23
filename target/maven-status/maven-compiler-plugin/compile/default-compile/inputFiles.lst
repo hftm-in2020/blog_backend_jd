@@ -1,0 +1,13 @@
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\entities\Comment.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\resources\ResponseException.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\CommentDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\LikeInfoDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\resources\BlogResource.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\EntryDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\EntryNewDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\EntryOverviewDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\entities\Entry.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\services\ServiceInitialization.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\dtos\CommentNewDto.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\services\ApprovalReceiver.java
+C:\GIT\XML2\blog_backend\src\main\java\ch\hftm\blog\messages\ValidationRequest.java
