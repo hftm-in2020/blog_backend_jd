@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
