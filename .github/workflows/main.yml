@@ -62,5 +62,5 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp revision restart -g ${{ env.RESSOURCE_GROUP }} --revision ${{ env.REVISION }}
+            az containerapp update -n ${{ env.AZURE_WEBAPP_NAME }} -g ${{ env.RESOURCE_GROUP }} --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
