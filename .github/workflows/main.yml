@@ -16,7 +16,7 @@ jobs:
       QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE: DEV Blog API
       QUARKUS_CONTAINER_IMAGE_NAME: blog-backend-dev
       QUARKUS_CONTAINER_IMAGE_TAG: latest-dev
-      AZURE_WEBAPP_NAME: My DEV Version
+      AZURE_WEBAPP_NAME: d-ca-blog-jd-dev
       AZURE_RESOURCE_GROUP: d-rg-blog-jd
       AZURE_IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
       AZURE_IMAGE_TAG: DEV
