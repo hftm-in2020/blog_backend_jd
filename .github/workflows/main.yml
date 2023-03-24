@@ -9,6 +9,8 @@ jobs:
     env:
       IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
       IMAGE_TAG: DEV
+      RESSOURCE_GROUP: d-rg-blog-jd
+      REVISION: d-ca-blog-jd-dev--yq4nk1o
       QUARKUS_PROFILE: dev
       QUARKUS_DATASOURCE_USERNAME: dbuser
       QUARKUS_DATASOURCE_PASSWORD: dbuser
@@ -60,5 +62,5 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp registry set -n d-ca-blog-jd-dev -g d-rg-blog-jd --server jessicasblog.azurecr.io --username  ${{ secrets.DCABLOGJDDEV_REGISTRY_USERNAME }} --password ${{ secrets.DCABLOGJDDEV_REGISTRY_PASSWORD }}
-            az containerapp update -n d-ca-blog-jd-dev -g d-rg-blog-jd --image jessicasblog.azurecr.io/d-ca-blog-jd-dev:${{ github.sha }}
+            az containerapp revision restart -g ${{ env.RESSOURCE_GROUP }} --revision ${{ env.REVISION }}
+
