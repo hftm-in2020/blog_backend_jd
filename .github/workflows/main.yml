@@ -27,6 +27,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.DCABLOGJDDEV_AZURE_CREDENTIALS }}
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
