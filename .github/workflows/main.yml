@@ -62,5 +62,5 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp update -n ${{env.AZURE_WEBAPP_NAME}} -g ${{env.RESOURCE_GROUP}} --image ${{ env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+            az containerapp update -n d-ca-blog-jd-dev -g d-rg-blog-jd --image jessicasblog.azurecr.io/blog_backend_jd:DEV
 
