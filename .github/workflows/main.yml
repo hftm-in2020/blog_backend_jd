@@ -18,8 +18,8 @@ jobs:
       QUARKUS_CONTAINER_IMAGE_TAG: latest-dev
       AZURE_WEBAPP_NAME: My DEV Version
       AZURE_RESOURCE_GROUP: d-rg-blog-jd
-      AZURE_IMAGE_NAME: '${{env.IMAGE_NAME}}'
-      AZURE_IMAGE_TAG: '${{env.IMAGE_TAG}}'
+      AZURE_IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
+      AZURE_IMAGE_TAG: DEV
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
