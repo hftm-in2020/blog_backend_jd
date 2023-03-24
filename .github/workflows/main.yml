@@ -3,7 +3,7 @@ name: Build and Deploy Docker image to Azure Container App
 on:
   push:
     branches:
-      - dev
+      - DEV
 
 jobs:
   build-and-push:
