@@ -49,7 +49,8 @@ jobs:
           --build-arg QUARKUS_DATASOURCE_JDBC_URL=${{env.QUARKUS_DATASOURCE_JDBC_URL}}
           -t ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}} .
       - name: Push Docker image to Azure Container Registry
-        run: 'docker push ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}}'
+        run: 
+          docker push ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}}
       - name: Deploy to Azure Container App
         uses: Azure/webapps-deploy@v2
         with:
