@@ -12,7 +12,7 @@ jobs:
       QUARKUS_PROFILE: dev
       QUARKUS_DATASOURCE_USERNAME: dbuser
       QUARKUS_DATASOURCE_PASSWORD: dbuser
-      QUARKUS_DATASOURCE_JDBC_URL: 'jdbc:mysql://dev-mysql:3306/blogdb'
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:mysql://d-mysql-blog-jd.mysql.database.azure.com:3306/blogdb
       QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE: DEV Blog API
       QUARKUS_CONTAINER_IMAGE_NAME: blog-backend-dev
       QUARKUS_CONTAINER_IMAGE_TAG: latest-dev
