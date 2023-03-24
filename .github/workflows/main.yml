@@ -42,6 +42,7 @@ jobs:
           src/main/resources/application.properties
       - name: Build Docker image
         run: >-
+          -f src/main/docker/Dockerfile.jvm
           docker build --build-arg QUARKUS_PROFILE=${{env.QUARKUS_PROFILE}}
           --build-arg
           QUARKUS_DATASOURCE_USERNAME=${{env.QUARKUS_DATASOURCE_USERNAME}}
@@ -49,7 +50,7 @@ jobs:
           QUARKUS_DATASOURCE_PASSWORD=${{env.QUARKUS_DATASOURCE_PASSWORD}}
           --build-arg
           QUARKUS_DATASOURCE_JDBC_URL=${{env.QUARKUS_DATASOURCE_JDBC_URL}} -t
-          ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}} .
+          ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}} 
       - name: Push Docker image to Azure Container Registry
         run: 'docker push ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}}'
       - name: Deploy to Azure Container App
