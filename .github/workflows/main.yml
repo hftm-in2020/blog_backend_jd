@@ -1,5 +1,5 @@
 name: Build and Deploy Docker image to Azure Container App
-'on':
+on:
   push:
     branches:
       - DEV
