@@ -42,8 +42,8 @@ jobs:
           src/main/resources/application.properties
       - name: Build Docker image
         run: >-
-          -f src/main/docker/Dockerfile.jvm
-          docker build --build-arg QUARKUS_PROFILE=${{env.QUARKUS_PROFILE}}
+          docker build --file src/main/docker/Dockerfile.jvm 
+          --build-arg QUARKUS_PROFILE=${{env.QUARKUS_PROFILE}}
           --build-arg
           QUARKUS_DATASOURCE_USERNAME=${{env.QUARKUS_DATASOURCE_USERNAME}}
           --build-arg
