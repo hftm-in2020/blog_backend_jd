@@ -112,7 +112,7 @@ Als Registry habe ich mich für Azure Container Registry entschieden und wie fol
     // --admin-enabled true   -> With this command you will be enabled to access your registry via Azure CLI 
     az acr create --resource-group "d-rg-blog-jd" --name "jessicasblog" --sku Basic --admin-enabled true
 
-Am Ende sieht das ganze in Azure etwa so aus:
+Am Ende sieht die Resourcen JSON in Azure etwa so aus:
    
    {
        "sku": {
@@ -146,7 +146,6 @@ Am Ende sieht das ganze in Azure etwa so aus:
        }
    }
  
-   
    
 ## Infrastruktur in Azure
 
@@ -274,6 +273,93 @@ Nun kannst du deine Container App so konfigurieren wie du sie brauchst. In meine
 Das gleiche was ich für DEV gemacht habe, mache ich jetzt auch noch für eine TEST und eine PROD Umgebung. Mann kann sich überlegen ob man bei produktiven Umgebungen eine leistungsstärkere Maschine haben möchte mit mehr CPU und RAM zum Beispiel. Da ich in meinem Fall nur eine sehr kleine Applikation laufen lasse, habe ich überall die gleiche Grösse für die Ressourcen gewählt.
 
 
+# Erstes Image in Container Registry laden, dann in Container App verwenden
+   
+Um zu sehen ob und wie ich mein Image in die Azure Container Registry bekomme, habe ich von meinem DEV Branch erstmal lokal ein Image gebuildet und dann in die Registry wie folgt hochgeladen:
+
+   // Docker Build image
+   docker build -t jessicasblog.azurecr.io/blog_backend_jd:DEV -f Dockerfile.jvm .
+
+   // Docker Image in Azure Container Registry pushen
+   docker push jessicasblog.azurecr.io/blog_backend_jd:DEV
+
+
+Der letztere Command setzt sich aus folgendem zusammen:
+   
+   * Mein Container Registry befindet sich hier: jessicasblog.azurecr.io
+   * Image welches ich pushe heisst: blog_backend_jd
+   * Verwendetes Tag: DEV
+
+Das hat soweit geklappt und in meiner Registry sieht es jetzt so aus:
+   
+   ![image](https://user-images.githubusercontent.com/104629842/227782924-95b36279-dcca-4b20-a70a-0c0847bfe298.png)
+
+   
+## Build, Upload and Deploy via Github Action
+   
+Nun möchte ich, dass automatisch bei jedem Commit ein Image generiert wird, in meine Registr hochgeladen wird, und dieses Image dann in meine Container App deployed wird. Um das zu automatisieren habe ich eine Github Action erstellt.
+   
+Ich habe noch nie zuvor mit Github Actions gearbeitet, und somit wollte ich ein bisschen ausprobieren. Einerseits wollte ich sicherstellen, dass ich Enviroment Variablen im Application.properties File des Projektes via Action setzten kann. Dafür habe ich das vorhandene application.properties File wie folgt angepasst:
+   
+   # COMMON CONFIG
+   ###############
+
+   # Database
+   quarkus.datasource.db-kind=mysql
+   quarkus.hibernate-orm.database.generation=none
+   quarkus.flyway.migrate-at-start=true
+
+   # Web
+   quarkus.http.cors=true
+   quarkus.swagger-ui.always-include=true
+   # quarkus.smallrye-openapi.info-title=Example Blog API
+
+   # Keycloak
+   quarkus.oidc.client-id=backend-service
+   quarkus.oidc.auth-server-url=https://d-cap-keyclaok.kindbay-711f60b2.westeurope.azurecontainerapps.io/realms/blog
+   quarkus.oidc.credentials.secret=<secret>
+
+   # Container Image
+   quarkus.container-image.group=hftm-inf
+   quarkus.container-image.registry=ghcr.io
+   %local.quarkus.container-image.name=blog-backend-local
+
+   # Use enviroment variables coming from Github actions file
+   ##########################################################
+   quarkus.profile=${QUARKUS_PROFILE}
+
+   # Database
+   quarkus.datasource.username=${QUARKUS_DATASOURCE_USERNAME:jd}
+   quarkus.datasource.password=${QUARKUS_DATASOURCE_PASSWORD:jd}
+   quarkus.datasource.jdbc.url=${QUARKUS_DATASOURCE_JDBC_URL:jdbc:mysql://dev-mysql:3306/blogdb}
+
+   # Web
+   quarkus.smallrye-openapi.info-title=${QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE}
+
+   # Container Image
+   quarkus.container-image.name=${QUARKUS_CONTAINER_IMAGE_NAME}
+   quarkus.container-image.tag=${QUARKUS_CONTAINER_IMAGE_TAG}
+
+Man erkennt die Variablen anhand des ${VARIABLEN_NAME}
+
+Wenn dir die Variablen Namen bekannt vorkommen, dann liegt dies daran, dass ich sie innerhalb meiner Github Action wie folgt eingesetzt habe (Beispiel DEV): 
+
+    env:
+      IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
+      IMAGE_TAG: DEV
+      RESSOURCE_GROUP: d-rg-blog-jd
+      REVISION: d-ca-blog-jd-dev--yq4nk1o
+      QUARKUS_PROFILE: dev
+      QUARKUS_DATASOURCE_USERNAME: dbuser
+      QUARKUS_DATASOURCE_PASSWORD: dbuser
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:mysql://d-mysql-blog-jd.mysql.database.azure.com:3306/blogdb
+      QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE: DEV Blog API
+      QUARKUS_CONTAINER_IMAGE_NAME: blog-backend-dev
+      QUARKUS_CONTAINER_IMAGE_TAG: latest-dev
+      AZURE_WEBAPP_NAME: d-ca-blog-jd-dev
+      AZURE_RESOURCE_GROUP: d-rg-blog-jd
+      AZURE_IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
+      AZURE_IMAGE_TAG: DEV
    
    
    
