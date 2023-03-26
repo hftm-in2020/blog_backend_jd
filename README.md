@@ -416,11 +416,6 @@ Das ist wohl nur eine von 20 Varianten wie ich versucht habe meine Applikation i
 Needless to say, nein ich habe es leider nicht geschaft ein Deployment in Azure zu machen... Würde mich aber mächtig interessieren an was es lag.
    
    
-# Revisions
-   
-   
-   
-   
    
 # Inbetriebnahme des Backends
 Example Blog-Backend for the Web-App course (Simple Class-Showcase Version)
