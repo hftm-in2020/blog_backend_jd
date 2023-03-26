@@ -410,6 +410,12 @@ Das ist wohl nur eine von 20 Varianten wie ich versucht habe meine Applikation i
    ![image](https://user-images.githubusercontent.com/104629842/227784423-0beb4195-da1d-40ac-9f3d-9c73b105f7b4.png)
 
    
+Needless to say, nein ich habe es leider nicht geschaft ein Deployment in Azure zu machen... Würde mich aber mächtig interessieren an was es lag.
+   
+   
+# Revisions
+   
+   
    
    
    
