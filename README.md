@@ -269,8 +269,9 @@ Nun kannst du deine Container App so konfigurieren wie du sie brauchst. In meine
        "identity": {
            "type": "None"
        }
-   }
-
+   } 
+   
+   
 
 Das gleiche was ich für DEV gemacht habe, mache ich jetzt auch noch für eine TEST und eine PROD Umgebung. Mann kann sich überlegen ob man bei produktiven Umgebungen eine leistungsstärkere Maschine haben möchte mit mehr CPU und RAM zum Beispiel. Da ich in meinem Fall nur eine sehr kleine Applikation laufen lasse, habe ich überall die gleiche Grösse für die Ressourcen gewählt.
 
