@@ -10,7 +10,7 @@ jobs:
       IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
       IMAGE_TAG: DEV
       RESSOURCE_GROUP: d-rg-blog-jd
-      REVISION: d-ca-blog-jd-dev--dev
+      REVISION: d-ca-blog-jd-dev--dev-1-0
       QUARKUS_PROFILE: dev
       QUARKUS_DATASOURCE_USERNAME: dbuser
       QUARKUS_DATASOURCE_PASSWORD: dbuser
