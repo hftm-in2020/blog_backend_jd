@@ -416,6 +416,30 @@ Das ist wohl nur eine von 20 Varianten wie ich versucht habe meine Applikation i
 Needless to say, nein ich habe es leider nicht geschaft ein Deployment in Azure zu machen... Würde mich aber mächtig interessieren an was es lag.
    
    
+
+# Revisionen
+   
+Ich habe mich mit den Multiple Revisions befasst in Azure. Diese sind vor allem interessant wenn man z.B auf Blue / Green Deployment setzen möchte. Das bedeutet einen Release step by step ablösen, vielleicht möchte man den Release 1.0 noch nicht komplett durch den Release 1.1 ersetzten wenn man sich noch nicht sicher ist ob dieser auch wirklich funktioniert.
+   
+Wenn man mit dem Multiple Mode arbeitet, hat man mehrere Revisionen die active sein können. Jede Revision repräsentiert somit eine Version unseres Images. 
+   
+Eine Revision hat einen eindeutigen Namen, welcher vergeben oder automatisch/random generiert werden kann:
+   ![image](https://user-images.githubusercontent.com/104629842/227801234-a450b923-6546-407e-ae2a-34f6e7a0de80.png)
+   
+Auch kann man Bezeichner für die Revisionen verwenden, oder sogenannte Label. Diese können immer wieder angepasst werden. Hat die Test Revision heute zum Beispiel den Release 1.2, könnten wir morgen das image mit der Version 1.3 darauf laufen lassen. In dem Fall können wir für eine klare Übersicht und Struktur den Bezeichner anpassen sobald wir das Image mit der Version 1.3 deployed haben.
+   ![image](https://user-images.githubusercontent.com/104629842/227801397-62ff1ca9-0167-4ef2-97de-4252dc0a4ab1.png)
+
+Hier ein Beispiel davon wie eine Revisions URL oder Bezeichnungs URL aussehen:
+   ![image](https://user-images.githubusercontent.com/104629842/227801584-948b46c2-3ccb-4844-a899-7f2c3eebda9f.png)
+
+Wie du siehst, nimmt er für die Revisions-URL den namen der Revision selbst in die URL, und für die Bezeichnungs URL nimmt er den im Bezeichner definierten Namen in die URL. Solang die Revisionen active sind können sie auch via ihrer URL erreicht werden.
+   
+Der Datenverkehr ist pro aktiver Revision konfigurierbar. Damit definieren wir wie viel % des Traffics auf welche Revision weitergeleitet werden soll:
+   
+   ![image](https://user-images.githubusercontent.com/104629842/227801735-b26292cf-f8d6-4f6d-92da-d0f2439d120a.png)
+
+   
+Wenn du nochmal einen Blick in meine Github Action wirfst, dann siehst du dass ich direkt via Action versuche eine Revision mit spezifischen Namen neu zu starten. Ich kann mittels Github Action also ganz einfach Befehle innerhalb meiner Azure Umgebung ausführen, sogar auf Revisions.
    
 # Inbetriebnahme des Backends
 Example Blog-Backend for the Web-App course (Simple Class-Showcase Version)
