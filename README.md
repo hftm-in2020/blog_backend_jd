@@ -90,6 +90,14 @@ Bevor ich die unterschiedlichen Ausschnitte der Action genauer erkläre, erzähl
 
 Den Teil zum erstellen einer Subscription und Ressourcen Gruppe werde ich bewusst überspringen und gehe davon aus, dass du mit dem Grundaufbau von Azure bekannt bist.
 
+## Aufbau in Github
+   
+Auf Github habe ich 3 Branches erstellt mit dem Backend Code:
+   
+   * DEV
+   * TEST
+   * PROD
+   
 ## Container Registry
 
 Als Registry habe ich mich für Azure Container Registry entschieden und wie folgt in Powershell mit Hilfe von Azure CLI erstellt:
@@ -154,7 +162,7 @@ Ich habe:
     * Eine Ressourcen Gruppe (RG) : d-rg-blog-jd
     * Eine Container Apps Enviroment: d-ce-blog-jd
 
-Innerhalb meiner RG klicke ich auf "Erstellen"
+Innerhalb der Ressourcen Gruppe klicke auf "Erstellen" um für meine DEV Umgebung eine Container App zu erstellen:
     ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img1.png)
     
 Nach Klick auf Erstellen wird man zum Marketplace weitergeleitet. Hier kannst du im Suchfeld Container App eintippen und auswählen. Hier nochmal auf Erstellen klicken
@@ -170,10 +178,105 @@ Nun kannst du deine Container App so konfigurieren wie du sie brauchst. In meine
 ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img4.png)
 
 
+ Die Ressourcen JSON findest du hier:
+   
+      {
+       "id": "/subscriptions/5a7e2fca-b2bf-4e61-8197-dbc31ef1d072/resourceGroups/d-rg-blog-jd/providers/Microsoft.App/containerapps/d-ca-blog-jd-dev",
+       "name": "d-ca-blog-jd-dev",
+       "type": "Microsoft.App/containerApps",
+       "location": "West Europe",
+       "systemData": {
+           "createdBy": "Jessica.Dominguez@hftm.ch",
+           "createdByType": "User",
+           "createdAt": "2023-03-19T13:30:10.1455186",
+           "lastModifiedBy": "fb441ae4-59c3-420a-8898-82a92ef09040",
+           "lastModifiedByType": "Application",
+           "lastModifiedAt": "2023-03-23T13:58:50.3181282"
+       },
+       "properties": {
+           "provisioningState": "Succeeded",
+           "managedEnvironmentId": "/subscriptions/5a7e2fca-b2bf-4e61-8197-dbc31ef1d072/resourceGroups/d-rg-blog-jd/providers/Microsoft.App/managedEnvironments/d-ce-blog-jd",
+           "environmentId": "/subscriptions/5a7e2fca-b2bf-4e61-8197-dbc31ef1d072/resourceGroups/d-rg-blog-jd/providers/Microsoft.App/managedEnvironments/d-ce-blog-jd",
+           "workloadProfileType": null,
+           "outboundIpAddresses": [
+               "20.123.246.126"
+           ],
+           "latestRevisionName": "d-ca-blog-jd-dev--dev",
+           "latestRevisionFqdn": "d-ca-blog-jd-dev--dev.redbeach-db0843bd.westeurope.azurecontainerapps.io",
+           "customDomainVerificationId": "7BF426BBD9BDD0FD1F939B71925AEF6EF3F14DFEDA891520BCBA5BE089F73BFC",
+           "configuration": {
+               "secrets": [
+                   {
+                       "name": "jessicasblogazurecrio-jessicasblog"
+                   },
+                   {
+                       "name": "reg-pswd-de95059e-9d49"
+                   }
+               ],
+               "activeRevisionsMode": "Single",
+               "ingress": {
+                   "fqdn": "d-ca-blog-jd-dev.redbeach-db0843bd.westeurope.azurecontainerapps.io",
+                   "external": true,
+                   "targetPort": 8080,
+                   "exposedPort": 0,
+                   "transport": "Auto",
+                   "traffic": [
+                       {
+                           "weight": 100,
+                           "latestRevision": true
+                       }
+                   ],
+                   "customDomains": null,
+                   "allowInsecure": false,
+                   "ipSecurityRestrictions": null
+               },
+               "registries": [
+                   {
+                       "server": "jessicasblog.azurecr.io",
+                       "username": "jessicasblog",
+                       "passwordSecretRef": "jessicasblogazurecrio-jessicasblog",
+                       "identity": ""
+                   }
+               ],
+               "dapr": null,
+               "maxInactiveRevisions": null
+           },
+           "template": {
+               "revisionSuffix": "",
+               "containers": [
+                   {
+                       "image": "jessicasblog.azurecr.io/blog_backend_jd:DEV",
+                       "name": "d-ca-blog-jd-dev",
+                       "resources": {
+                           "cpu": 0.5,
+                           "memory": "1Gi",
+                           "ephemeralStorage": "2Gi"
+                       },
+                       "probes": []
+                   }
+               ],
+               "initContainers": null,
+               "scale": {
+                   "minReplicas": 0,
+                   "maxReplicas": 10,
+                   "rules": null
+               },
+               "volumes": null
+           },
+           "eventStreamEndpoint": "https://westeurope.azurecontainerapps.dev/subscriptions/5a7e2fca-b2bf-4e61-8197-dbc31ef1d072/resourceGroups/d-rg-blog-jd/containerApps/d-ca-blog-jd-dev/eventstream"
+       },
+       "identity": {
+           "type": "None"
+       }
+   }
 
 
+Das gleiche was ich für DEV gemacht habe, mache ich jetzt auch noch für eine TEST und eine PROD Umgebung. Mann kann sich überlegen ob man bei produktiven Umgebungen eine leistungsstärkere Maschine haben möchte mit mehr CPU und RAM zum Beispiel. Da ich in meinem Fall nur eine sehr kleine Applikation laufen lasse, habe ich überall die gleiche Grösse für die Ressourcen gewählt.
 
 
+   
+   
+   
 # Inbetriebnahme des Backends
 Example Blog-Backend for the Web-App course (Simple Class-Showcase Version)
 
