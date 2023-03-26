@@ -105,10 +105,41 @@ Als Registry habe ich mich für Azure Container Registry entschieden und wie fol
     az acr create --resource-group "d-rg-blog-jd" --name "jessicasblog" --sku Basic --admin-enabled true
 
 Am Ende sieht das ganze in Azure etwa so aus:
-
-    ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img5.png)
-
-
+   
+   {
+       "sku": {
+           "name": "Basic",
+           "tier": "Basic"
+       },
+       "type": "Microsoft.ContainerRegistry/registries",
+       "id": "/subscriptions/5a7e2fca-b2bf-4e61-8197-dbc31ef1d072/resourceGroups/d-rg-blog-jd/providers/Microsoft.ContainerRegistry/registries/jessicasblog",
+       "name": "jessicasblog",
+       "location": "westeurope",
+       "tags": {},
+       "properties": {
+           "loginServer": "jessicasblog.azurecr.io",
+           "creationDate": "2023-03-18T20:40:39.9967142Z",
+           "provisioningState": "Succeeded",
+           "adminUserEnabled": false,
+           "policies": {
+               "quarantinePolicy": {
+                   "status": "disabled"
+               },
+               "trustPolicy": {
+                   "type": "Notary",
+                   "status": "disabled"
+               },
+               "retentionPolicy": {
+                   "days": 7,
+                   "lastUpdatedTime": "2023-03-23T20:40:48.085274+00:00",
+                   "status": "disabled"
+               }
+           }
+       }
+   }
+ 
+   
+   
 ## Infrastruktur in Azure
 
 Um meinen Code irgendwo deployen zu können, habe ich von Container Apps in Azure gebrauch gemacht. Es gibt zwei Möglichkeiten wie du eine Container App in Betrieb nehmen kannst:
@@ -127,14 +158,15 @@ Innerhalb meiner RG klicke ich auf "Erstellen"
     ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img1.png)
     
 Nach Klick auf Erstellen wird man zum Marketplace weitergeleitet. Hier kannst du im Suchfeld Container App eintippen und auswählen. Hier nochmal auf Erstellen klicken
+   
+![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img2.png)
 
-    ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img2.png)
-
+   
 Nun kannst du deine Container App so konfigurieren wie du sie brauchst. In meinem Falle so:
 
-    ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img3.png)
+![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img3.png)
     
-    ![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img4.png)
+![alt text](https://github.com/jessicadominguezstevanovic/images/blob/main/images/img4.png)
 
 
 
