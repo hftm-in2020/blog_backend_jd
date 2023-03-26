@@ -277,10 +277,10 @@ Das gleiche was ich für DEV gemacht habe, mache ich jetzt auch noch für eine T
    
 Um zu sehen ob und wie ich mein Image in die Azure Container Registry bekomme, habe ich von meinem DEV Branch erstmal lokal ein Image gebuildet und dann in die Registry wie folgt hochgeladen:
 
-   // Docker Build image
+   //Docker Build image
    docker build -t jessicasblog.azurecr.io/blog_backend_jd:DEV -f Dockerfile.jvm .
 
-   // Docker Image in Azure Container Registry pushen
+   //Docker Image in Azure Container Registry pushen
    docker push jessicasblog.azurecr.io/blog_backend_jd:DEV
 
 
@@ -297,46 +297,30 @@ Das hat soweit geklappt und in meiner Registry sieht es jetzt so aus:
    
 ## Build, Upload and Deploy via Github Action
    
-Nun möchte ich, dass automatisch bei jedem Commit ein Image generiert wird, in meine Registr hochgeladen wird, und dieses Image dann in meine Container App deployed wird. Um das zu automatisieren habe ich eine Github Action erstellt.
+Nun möchte ich, dass automatisch bei jedem Commit ein Image generiert wird, in meine Registr hochgeladen wird, und dieses Image dann in meine Container App deployed wird. Um das zu automatisieren habe ich die Github Action erstellt die ich dir zu Beginn des Readme's gezeigt habe. Hier nun eine Erklärung dazu:
+   
+In diesem Abschnitt gebe ich meiner Action einen Namen und definiere wann sie ausgeführt werden soll, nähmlich on PUSH und zwar auf den Branch DEV.
+Es gibt die Möglichkeit auch mehrere Branches anzugeben wenn der Bedarf da ist.
+   
+   name: Build and Deploy Docker image to Azure Container App
+   on:
+     push:
+       branches:
+         - DEV
+
+Der Name des Jobs ist build-and-push. Mit der runs-on Option können wir der Action sagen auf was für einem Enviroment er den Job ausführen soll, in unserem Fall läuft er auf einer Linux Maschine mit der neusten (latest) Ubuntu Version. 
+   
+   jobs:
+     build-and-push:
+       runs-on: ubuntu-latest
    
 Ich habe noch nie zuvor mit Github Actions gearbeitet, und somit wollte ich ein bisschen ausprobieren. Einerseits wollte ich sicherstellen, dass ich Enviroment Variablen im Application.properties File des Projektes via Action setzten kann. Dafür habe ich das vorhandene application.properties File wie folgt angepasst:
    
-   # COMMON CONFIG
-   ###############
-
-   # Database
-   quarkus.datasource.db-kind=mysql
-   quarkus.hibernate-orm.database.generation=none
-   quarkus.flyway.migrate-at-start=true
-
-   # Web
-   quarkus.http.cors=true
-   quarkus.swagger-ui.always-include=true
-   # quarkus.smallrye-openapi.info-title=Example Blog API
-
-   # Keycloak
-   quarkus.oidc.client-id=backend-service
-   quarkus.oidc.auth-server-url=https://d-cap-keyclaok.kindbay-711f60b2.westeurope.azurecontainerapps.io/realms/blog
-   quarkus.oidc.credentials.secret=<secret>
-
-   # Container Image
-   quarkus.container-image.group=hftm-inf
-   quarkus.container-image.registry=ghcr.io
-   %local.quarkus.container-image.name=blog-backend-local
-
-   # Use enviroment variables coming from Github actions file
-   ##########################################################
    quarkus.profile=${QUARKUS_PROFILE}
-
-   # Database
    quarkus.datasource.username=${QUARKUS_DATASOURCE_USERNAME:jd}
    quarkus.datasource.password=${QUARKUS_DATASOURCE_PASSWORD:jd}
    quarkus.datasource.jdbc.url=${QUARKUS_DATASOURCE_JDBC_URL:jdbc:mysql://dev-mysql:3306/blogdb}
-
-   # Web
    quarkus.smallrye-openapi.info-title=${QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE}
-
-   # Container Image
    quarkus.container-image.name=${QUARKUS_CONTAINER_IMAGE_NAME}
    quarkus.container-image.tag=${QUARKUS_CONTAINER_IMAGE_TAG}
 
@@ -360,6 +344,72 @@ Wenn dir die Variablen Namen bekannt vorkommen, dann liegt dies daran, dass ich 
       AZURE_RESOURCE_GROUP: d-rg-blog-jd
       AZURE_IMAGE_NAME: jessicasblog.azurecr.io/blog_backend_jd
       AZURE_IMAGE_TAG: DEV
+   
+Unter dem nächsten Abschnitt meiner Action definiere ich die nötigen Steps die er durchführen sollte:
+
+Selbsterklärend, wird für das Checkouts des Codes verwendet
+   
+    - name: Checkout Code
+        uses: actions/checkout@v2
+
+In Azure einloggen mit den gegebenen Credentials. Das DCABLOGJDDEV_AZURE_CREDENTIALS secret muss in Github unter Repository Secrets definiert sein
+   
+    - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.DCABLOGJDDEV_AZURE_CREDENTIALS }}
+   
+Login zur Azure Registry, auch hier wieder credentials die aus Azure entnommen und in Github gepflegt werden müssen.
+   
+   - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: jessicasblog.azurecr.io
+          username: '${{secrets.ACR_USERNAME}}'
+          password: '${{secrets.ACR_PASSWORD}}
+   
+Im folgenden Teil ersetzte ich die Variablen im application.properties File durch die Enviroment Variablen die ich in der Action gesetzt habe:
+   
+   - name: Replace environment variables in application.properties file
+        run: >-
+          sed -i 's|\%dev.quarkus.smallrye-openapi.info-title=DEV Blog
+          API|\%dev.quarkus.smallrye-openapi.info-title='"${QUARKUS_SMALLRYE_OPENAPI_INFO_TITLE}"'|g;
+          s|\%dev.quarkus.container-image.name=blog-backend-dev|\%dev.quarkus.container-image.name='"${QUARKUS_CONTAINER_IMAGE_NAME}"'|g;
+          s|\%dev.quarkus.container-image.tag=latest-dev|\%dev.quarkus.container-image.tag='"${QUARKUS_CONTAINER_IMAGE_TAG}"'|g'
+          src/main/resources/application.properties
+   
+Hier wird ein Build Image generiert:
+   
+    - name: Build Docker image
+        run: >-
+          docker build --file src/main/docker/Dockerfile.jvm
+          --build-arg QUARKUS_PROFILE=${{env.QUARKUS_PROFILE}}
+          --build-arg QUARKUS_DATASOURCE_USERNAME=${{env.QUARKUS_DATASOURCE_USERNAME}}
+          --build-arg QUARKUS_DATASOURCE_PASSWORD=${{env.QUARKUS_DATASOURCE_PASSWORD}}
+          --build-arg QUARKUS_DATASOURCE_JDBC_URL=${{env.QUARKUS_DATASOURCE_JDBC_URL}}
+          -t ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}} .
+   
+Und entsprechend in meine Azure Container Registry hochgeladen:
+   
+   - name: Push Docker image to Azure Container Registry
+        run: 
+          docker push ${{env.AZURE_IMAGE_NAME}}:${{env.AZURE_IMAGE_TAG}}
+   
+In einem letzten Schritt habe ich versucht das ganze dann wirklich in Azure zu deployen, leider ohne Erfolg...
+   
+   - name: Deploy to Azure Container App
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp update -n d-ca-blog-jd-dev -g d-rg-blog-jd --image jessicasblog.azurecr.io/blog_backend_jd:DEV
+            az containerapp revision restart -n d-ca-blog-jd-dev -g d-rg-blog-jd --revision d-ca-blog-jd-dev--yq4nk1o
+   
+Das ist wohl nur eine von 20 Varianten wie ich versucht habe meine Applikation in Azure zu deployen, und "oh boy" habe ich versuche gestartet...
+   
+   ![image](https://user-images.githubusercontent.com/104629842/227784423-0beb4195-da1d-40ac-9f3d-9c73b105f7b4.png)
+
+   
    
    
    
